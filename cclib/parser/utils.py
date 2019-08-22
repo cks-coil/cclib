@@ -118,11 +118,13 @@ def convertor(value, fromunits, tounits):
         "eV_to_hartree":    lambda x: x / 27.21138505,
         "eV_to_kcal/mol":   lambda x: x * 23.060548867,
         "eV_to_kJ/mol":     lambda x: x * 96.4853364596,
+        "eV_to_J":          lambda x: x / (1.602176634  * 1e-19),
 
         "hartree_to_wavenumber": lambda x: x * 219474.6313708,
         "hartree_to_eV":         lambda x: x * 27.21138505,
         "hartree_to_kcal/mol":   lambda x: x * 627.50947414,
         "hartree_to_kJ/mol":     lambda x: x * 2625.4996398,
+        "hartree_to_J":          lambda x: x / (4.3597447222071 * 1e-18),
 
         "kcal/mol_to_wavenumber": lambda x: x * 349.7550112,
         "kcal/mol_to_eV":         lambda x: x / 23.060548867,
@@ -133,6 +135,7 @@ def convertor(value, fromunits, tounits):
         "kJ/mol_to_eV":         lambda x: x / 96.4853364596,
         "kJ/mol_to_hartree":    lambda x: x / 2625.49963978,
         "kJ/mol_to_kcal/mol":   lambda x: x / 4.184,
+
         "nm_to_wavenumber":     lambda x: 1e7 / x,
 
         # Taken from GAMESS docs, "Further information",
@@ -151,6 +154,8 @@ def convertor(value, fromunits, tounits):
         "ebohr4_to_Debye.ang3": lambda x: x * 0.3766479268,
         "ebohr5_to_Debye.ang4": lambda x: x * 0.1993134985,
 
+        "mDyne/Angstrom_to_hartree/bohr2": lambda x: x / 15.5689310283,
+        "mDyne/Angstrom_to_eV/Angstrom2": lambda x: x / (1.602176634 * 1e-1),
     }
 
     return _convertor["%s_to_%s" % (fromunits, tounits)](value)

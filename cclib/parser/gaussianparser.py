@@ -156,6 +156,19 @@ class Gaussian(logfileparser.Logfile):
             self.atomcoords= \
               [self.atomcoords_BOMD[i] for i in sorted(self.atomcoords_BOMD.keys())]
 
+        # Gaussian prints 'forces' in input orientation unlike other values such as 'moments' or 'vibdisp'.
+        # Therefore, we convert 'grads' to the values in standard orientation with rotation matrix.
+        if hasattr(self, 'grads') and hasattr(self, 'inputcoords') \
+           and hasattr(self, 'atomcoords') and self.natom >= 2:
+            # calculate rotation matriexes for input orientation to standard orientation
+            R = self.calc_rotation_matrixes(self.inputcoords, self.atomcoords)
+            grads_std = []
+            for g, r in zip(self.grads ,R):
+                g_std = numpy.dot(r, numpy.array(g).T).T
+                grads_std.append(g_std.tolist())
+            self.grads = grads_std
+
+
     def extract(self, inputfile, line):
         """Extract information from the file object inputfile."""
 
@@ -2082,3 +2095,21 @@ class Gaussian(logfileparser.Logfile):
 
         if line[:31] == ' Normal termination of Gaussian':
             self.metadata['success'] = True
+
+    @staticmethod
+    def calc_rotation_matrixes(A, B):
+        """
+        calculate rotation matrixes for A to B
+        """
+        A = numpy.array(A)
+        B = numpy.array(B)
+        A -= A[:,[0],:]
+        B -= B[:,[0],:]
+        R = []
+        for a, b in zip(A,B):
+            if a.shape[0] == 2:
+                a = numpy.append(a, [[0,0,0]], axis=0)
+                b = numpy.append(b, [[0,0,0]], axis=0)
+            r = numpy.dot(b.T, numpy.linalg.pinv(a.T))
+            R.append(r)
+        return R

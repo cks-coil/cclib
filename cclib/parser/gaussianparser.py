@@ -1296,7 +1296,7 @@ class Gaussian(logfileparser.Logfile):
                     if not hasattr(self, 'vibrmasses'):
                         self.vibrmasses = []
 
-                    rmasses = [self.float(f) for f in line[15:].split()]
+                    rmasses = [utils.float(f) for f in line[15:].split()]
                     self.vibrmasses.extend(rmasses)
 
                 if line[1:15] == "Frc consts  --":  # note: matches low-precision block, and
@@ -1304,7 +1304,7 @@ class Gaussian(logfileparser.Logfile):
                     if not hasattr(self, 'vibfconsts'):
                         self.vibfconsts = []
 
-                    fconsts = [utils.convertor(self.float(f), "mDyne/Angstrom", "eV/Angstrom2") for f in line[15:].split()]
+                    fconsts = [utils.convertor(utils.float(f), "mDyne/Angstrom", "eV/Angstrom2") for f in line[15:].split()]
                     self.vibfconsts.extend(fconsts)
 
                 if line[1:15] == "IR Inten    --":  # note: matches only low-precision block
